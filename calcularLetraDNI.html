@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>
+                Calcular letra del dni
+        </title>
+    </head>
+    <body>
+        Por favor, introduzca su dni
+        <input type="text" id="numerito">
+        <button onclick="dameLetraDNI()">Ver Letra</button>
+        <br/><br/>
+        <span id="resultado"></span>
+
+        <script>
+            
+            function dameLetraDNI()
+            {
+                const letrasPosibles = ['T','R','W','A','G','M','Y','F','P','D','X','B','N','J','Z','S','Q','V','H','L','C','K','E'];
+                var letra = document.getElementById("letra");
+                
+                try {
+                    var lointroducido = parseInt(document.getElementById("numerito").value);
+                    if (isNaN(lointroducido))
+                    {
+                        document.getElementById("resultado").innerHTML= "Introduce un número válido";
+                    }
+                    else
+                    {
+                        var resto =  lointroducido % 23;
+                        document.getElementById("resultado").innerHTML= "La letra correspondiente al DNI " + lointroducido + " es " + letrasPosibles[resto];    
+                    }
+                    
+                } catch (error) {
+                    
+                    document.getElementById("resultado").innerHTML= "Ha ocurrido un error --> " + error.message;
+                }
+                
+            }
+        </script>
+    </body>
+</html>
+
+<script>
+
+</script>
