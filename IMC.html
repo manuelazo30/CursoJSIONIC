@@ -1,95 +1,95 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <center>
-        <table>
-            <tr>
-                <td colspan="2">Calcular IMC<br/><hr></td>
-            </tr>
-            <tr>
-                <td>Por favor, introduzca su peso (en Kgs)</td>
-                <td><input type="text" id="txtPeso"></td>
-            </tr>
-            <tr>
-                <td>Por favor, introduzca su altura (en cms)</td>
-                <td><input type="text" id="txtAltura"></td>
-            </tr>
-        </table>
+    <!DOCTYPE html>
+    <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+    <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+    <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title></title>
+            <meta name="description" content="">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
+        <body>
+            <!--[if lt IE 7]>
+                <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            <![endif]-->
+        <center>
+            <table>
+                <tr>
+                    <td colspan="2">Calcular IMC<br/><hr></td>
+                </tr>
+                <tr>
+                    <td>Por favor, introduzca su peso (en Kgs)</td>
+                    <td><input type="text" id="txtPeso"></td>
+                </tr>
+                <tr>
+                    <td>Por favor, introduzca su altura (en cms)</td>
+                    <td><input type="text" id="txtAltura"></td>
+                </tr>
+            </table>
 
-        <button onclick="calcularIMC()">Calcular IMC</button>
+            <button onclick="calcularIMC()">Calcular IMC</button>
 
-        <div id="resultados"></div>
+            <div id="resultados"></div>
 
-    </center>
+        </center>
 
-    <script>
+        <script>
 
-        function calcularIMC(){
-            try
-            {
-                var peso = document.getElementById("txtPeso").value;
-                var altura = document.getElementById("txtAltura").value / 100;
-                var divResultados = document.getElementById("resultados");
-                divResultados.style.display = "block";
-                divResultados.setAttribute("style", "display: block;");
-
-                if (peso == "" || altura == "")
+            function calcularIMC(){
+                try
                 {
-                    divResultados.setAttribute("style", "background-color: red;");
-                    divResultados.innerHTML = "Por favor, introduzca valores válidos";
-                    return;
+                    var peso = document.getElementById("txtPeso").value;
+                    var altura = document.getElementById("txtAltura").value / 100;
+                    var divResultados = document.getElementById("resultados");
+                    divResultados.style.display = "block";
+                    divResultados.setAttribute("style", "display: block;");
+
+                    if (peso == "" || altura == "")
+                    {
+                        divResultados.setAttribute("style", "background-color: red;");
+                        divResultados.innerHTML = "Por favor, introduzca valores válidos";
+                        return;
+                    }
+
+                    var IMC = peso / Math.pow(altura,2);
+
+                    var imagenFoto = document.createElement("img");
+                    imagenFoto.setAttribute('width', 146);
+                    imagenFoto.setAttribute('height', 97);
+                    
+                    switch(true) {
+                        case IMC < 16:
+                            imagenFoto.setAttribute("src", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRcfJiPeDlHYe0BmlerHFs4ICUgBoCbiqih1i5mIUE-mGODx9V");
+                            break;
+                        case IMC >= 16 && IMC < 18:
+                            imagenFoto.setAttribute("src", "http://educasaac.educa.madrid.org/uploads/images/download.php?f=201502131541522.png&n=delgado_picto_color");
+                            break;
+                        case IMC >= 18 && IMC < 25:
+                            imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292594/zslua2sryjo9x43dn7nc.jpg");
+                            break;
+                        case IMC >= 16 && IMC < 25:
+                            imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292630/mdy0tnz6dbjhhih0inve.jpg");
+                            break;
+                        case IMC >= 25 && IMC < 31:
+                            imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292618/jbc2ji1fhajwhtl4rspf.jpg");
+                            break;
+                        default:
+                            imagenFoto.setAttribute("src", "https://www.definicionabc.com/wp-content/uploads/Im%C3%A1gen-Vectorial.jpg");
+                            break;
+                    }
+                    divResultados.innerHTML = "<br/>El índice de Masa Corporal es " + IMC + "<br/><br/>";
+                    divResultados.appendChild(imagenFoto);
+                    
+
+                    // document.getElementById("IMCResultado").innerHTML = "El índice de Masa Corporal es " + IMC;
                 }
-
-                var IMC = peso / Math.pow(altura,2);
-
-                var imagenFoto = document.createElement("img");
-                imagenFoto.setAttribute('width', 146);
-                imagenFoto.setAttribute('height', 97);
-                
-                switch(true) {
-                    case IMC < 16:
-                        imagenFoto.setAttribute("src", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRcfJiPeDlHYe0BmlerHFs4ICUgBoCbiqih1i5mIUE-mGODx9V");
-                        break;
-                    case IMC >= 16 && IMC < 18:
-                        imagenFoto.setAttribute("src", "http://educasaac.educa.madrid.org/uploads/images/download.php?f=201502131541522.png&n=delgado_picto_color");
-                        break;
-                    case IMC >= 18 && IMC < 25:
-                        imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292594/zslua2sryjo9x43dn7nc.jpg");
-                        break;
-                    case IMC >= 16 && IMC < 25:
-                        imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292630/mdy0tnz6dbjhhih0inve.jpg");
-                        break;
-                    case IMC >= 25 && IMC < 31:
-                        imagenFoto.setAttribute("src", "https://img.playbuzz.com/image/upload/f_auto,fl_lossy,q_auto:best/c_limit,w_640/v1518292618/jbc2ji1fhajwhtl4rspf.jpg");
-                        break;
-                    default:
-                        imagenFoto.setAttribute("src", "https://www.definicionabc.com/wp-content/uploads/Im%C3%A1gen-Vectorial.jpg");
-                        break;
+                catch (err)
+                {
+                    divResultados.innerHTML = err.message;
                 }
-                divResultados.innerHTML = "<br/>El índice de Masa Corporal es " + IMC + "<br/><br/>";
-                divResultados.appendChild(imagenFoto);
-                
-
-                // document.getElementById("IMCResultado").innerHTML = "El índice de Masa Corporal es " + IMC;
             }
-            catch (err)
-            {
-                divResultados.innerHTML = err.message;
-            }
-        }
-    </script>
-    </body>
-</html>
+        </script>
+        </body>
+    </html>

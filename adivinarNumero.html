@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Adivinar Números</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body onload="inicializar()">
+        <script>            
+
+            var numeritoParaAdivinar;
+            var numerodeIntentos = 5;
+            var cuantosIntentosLlevo = 0;
+            var numeroIntroducido;
+
+            function inicializar()
+            {
+                numeritoParaAdivinar = generaNumeroAleatorio();
+                numerodeIntentos = dameNumeroDeIntentosMaximos();
+                pedirDatos();
+            }
+
+            function dameNumeroDeIntentosMaximos()
+            {
+                return prompt("¿Cuántos intentos quieres tener para adivinar el número?");
+            }
+            
+            function generaNumeroAleatorio()
+            {
+                return Math.ceil(Math.random() * 100);
+            }
+
+            function HeLlegadoAlMaximoDeIntentos()
+            {
+                var findeintentos = false;
+
+                if (cuantosIntentosLlevo = numerodeIntentos)
+                {
+                    findeintentos = true;
+                }
+                
+                return findeintentos;
+            }
+
+            function pedirDatos()
+            {
+                var cuerpo = document.getElementById("resultado");
+                cuerpo.innerHTML = "";
+                do
+                {
+                    cuantosIntentosLlevo++;
+                    if (HeLlegadoAlMaximoDeIntentos() == true)
+                    {
+                        alert("OHHHHHH. Lo has intentado el número máximo de veces sin adivinarlo. El número correcto era " + numeritoParaAdivinar);
+                    }
+                    else
+                    {
+                        
+
+                        numeroIntroducido = prompt("Introduce un número a ver si lo adivinas");
+                        cuerpo.innerHTML += "Has introducido el número " + numeroIntroducido + "<br/>";
+                        cuerpo.innerHTML += "<hr>";
+                        console.log(numeroIntroducido);
+                        console.log(numeritoParaAdivinar);
+                        if (numeroIntroducido < numeritoParaAdivinar)
+                        {
+                            alert ("El número introducido es menor que el número para adivinar");
+                        }
+                        else if (numeroIntroducido > numeritoParaAdivinar)
+                        {
+                            alert ("El número introducido es mayor que el número para adivinar");
+                        }
+                        else
+                        {
+                            alert("DE PUTA MADREEEEE. EL número introducido es el correcto !!!");
+                            break;
+                        }
+
+                    }
+
+                }while (numerodeIntentos > cuantosIntentosLlevo);
+
+                cuerpo.innerHTML += "El número correcto es el " + numeritoParaAdivinar;
+            }
+        
+        </script>
+
+        <div id="resultado"></div>
+    </body>
+</html>

@@ -1,0 +1,64 @@
+<!-- Crear una caja de texto y un botón que al pulsarlo vaya rellenado un table y elimine el texto de la caja de texto-->
+
+<html>
+    <head>
+    </head>
+    <body>
+        Por favor, escriba algo ... <input type="text" id="txtTextoEntrada"><br>
+        <br>
+        <button onclick="addComentario()">Poner mas</button>
+        <!-- <button>Add ...</button> -->
+        <div id="divResultado">
+            <table id="tbComentarios"></table>
+        </div>
+
+        <script>
+            window.onload = addComentario;
+            var miArrayComentarios = new Array();
+
+            function inicializar()
+            {
+                document.getElementsByTagName("button").addEventListener("click", addComentario);
+            }
+            
+            function addComentario()
+            {
+                // Añado al Array el texto
+                miArrayComentarios.push(document.getElementById("txtTextoEntrada").value);
+
+                // Creo TR, TD y pongo el texto del TD
+                var nuevoTR = document.createElement("TR");
+                var nuevoTD = document.createElement("TD");
+                var textoCelda = document.createTextNode(document.getElementById("txtTextoEntrada").value);
+
+                //Añado al dato el click para borrarComentario
+                nuevoTD.addEventListener("click", deleteComentario);
+                nuevoTD.appendChild(textoCelda);
+                nuevoTR.id = Math.random();
+                miArrayComentarios[nuevoTR.id] = textoCelda;
+                nuevoTR.appendChild(nuevoTD);
+                     
+                document.getElementById("tbComentarios").appendChild(nuevoTR);                
+                document.getElementById("txtTextoEntrada").value = "";
+                mostrarArray();
+            }
+
+            function deleteComentario()
+            {
+                document.getElementById(this.parentElement.id).remove();
+                console.log(this.parentElement.id);
+                var indice = miArrayComentarios.indexOf(this.parentElement.id);
+                console.log(indice);
+                if ( indice !== -1 ) {
+                    miArrayComentarios.splice(indice, 1);
+                    mostrarArray();
+                }
+            }
+
+            function mostrarArray()
+            {
+                console.log("El Array tiene este contenido: " + miArrayComentarios);
+            }
+        </script>
+    </body>
+</html>
