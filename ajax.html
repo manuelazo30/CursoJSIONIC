@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <h1><strong>AJAX</strong></h1>
+        
+        Nombre: <input type="text" name="txtName" id="txtName">
+        <br>
+        
+        Edad: <input type="text" name="txtEdad" id="txtEdad">
+        <br>
+        <br>
+
+        <button value="Enviar" onclick="EnviarDatos()">Enviar</button>
+
+        <script>
+            var xmlHttp = new XMLHttpRequest();
+            const DIR_SERV = "http://10.1.2.10:8080/appwebprofe/RegistrarPersona";
+
+            function EnviarDatos()
+            {
+                var nombre = document.getElementById("txtName").value;
+                var edad = document.getElementById("txtEdad").value;
+                console.log(nombre + " " + edad);
+
+                var persona = {
+                    nombre: nombre,
+                    edad: edad
+                }
+
+                alert("Nombre Persona --> " + persona.nombre);
+                alert("Edad Persona --> " + persona.edad);
+
+                // Librería integrada JSON
+
+                var personaJSON = JSON.stringify(persona);
+
+                console.log(personaJSON);
+
+                // PREPARO LA LLAMADA
+
+                xmlHttp.onreadystatechange = procesarEventos;
+
+                // HAGO LA LLAMADA
+
+                xmlHttp.open('POST', DIR_SERV, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+                xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+                xmlHttp.send(personaJSON); // El cuerpo del mensaje. Aquí podría poner directamente JSON.stringify(persona);
+
+
+                function procesarEventos()
+                {
+                    console.log ("Procesar Eventos: " + xmlHttp.readyState);
+
+                    if (xmlHttp.readyState == 4)
+                    {
+                        console.log(xmlHttp.responseText);
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

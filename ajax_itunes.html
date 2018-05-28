@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Artistas Itunes</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <script>
+        var xmlHttp = new XMLHttpRequest();
+
+    function dameConsulta()
+    {
+        var URL = "https://itunes.apple.com/search?term=" + document.getElementById("txtArtista").value; // lola&media=music&limit=20";
+        console.log(URL);
+        xmlHttp.onreadystatechange = procesarPeticion;
+        xmlHttp.open('GET', URL, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+        xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+        xmlHttp.send(null); // El cuerpo del mensaje. Aquí podría poner directamente JSON.stringify(persona);
+    }
+
+    function procesarPeticion()
+    {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        {
+            document.getElementById("tbResultados").classList.remove("oculto");
+            var mensajeRespuesta = JSON.parse(xmlHttp.responseText);
+            for (var clave in mensajeRespuesta.results){
+                addInfo(mensajeRespuesta.results[clave]);
+            }
+        }
+    }
+
+    function addInfo(Item)
+    {
+        console.log(Item);
+
+        // Creo TR, TD y pongo el texto del TD
+        var nuevoTR = document.createElement("TR");
+
+        var nuevoTD1 = document.createElement("TD");
+        var nuevoTD2 = document.createElement("TD");
+        var nuevoTD3 = document.createElement("TD");
+        var nuevoTD4 = document.createElement("TD");
+        var nuevoTD5 = document.createElement("TD");
+
+        var texto1 = document.createTextNode(Item.trackId);
+        nuevoTD1.appendChild(texto1);
+
+        var texto2 = document.createTextNode(Item.artistName);
+        nuevoTD2.appendChild(texto2);
+
+        var imagen = document.createElement("IMG");
+        imagen.src = Item.artworkUrl100;
+        var texto3 = document.createTextNode(imagen);
+        nuevoTD3.appendChild(imagen);
+
+        var texto4 = document.createTextNode(Item.trackPrice + " " + Item.currency);
+        nuevoTD4.appendChild(texto4);
+
+        var audio = document.createElement("AUDIO");
+        audio.controls = "controls";
+        var audio2 = document.createElement("SOURCE");
+        audio2.src = Item.previewUrl;
+        audio2.type = "audio/x-m4a";
+        audio.appendChild(audio2);
+        nuevoTD5.appendChild(audio);
+ 
+        nuevoTR.appendChild(nuevoTD1);
+        nuevoTR.appendChild(nuevoTD2);
+        nuevoTR.appendChild(nuevoTD3);
+        nuevoTR.appendChild(nuevoTD4);
+        nuevoTR.appendChild(nuevoTD5);
+
+        document.getElementById("tbResultados").getElementsByTagName('tbody')[0].appendChild(nuevoTR);                
+        
+    }
+    </script>
+
+    <style>
+
+        .success td
+        {
+            background-color:red !important;
+        }
+    
+        .oculto{
+            visibility: hidden;
+        }
+    
+    </style>
+    <div id="busqueda">
+        Artista: <input type="text" name="txtArtista" id="txtArtista" value="Bunbury">
+        <br/>
+        <button id="btnBuscar" onclick="dameConsulta()">Buscar</button>
+    </div>
+    <div id="resultados">
+        <table id ="tbResultados" class="table table-striped">
+            <tr>
+                <td>TrackId</td>
+                <td>Artista</td>
+                <td>Imagen</td>
+                <td>Precio</td>
+                <td>Escuchar</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Encriptación</title>
+    <script>
+        var clave = 0;
+        var xmlHttp = new XMLHttpRequest();
+        window.addEventListener("load", obtenerClave);
+
+        function encriptar()
+        {
+            document.getElementById("txtValorEncriptado").value = "";
+            var elTexto = document.getElementById("txtValor").value;
+            var elTextoEncriptado = "";
+            for (var i = 0; i < elTexto.length; i += 1) {
+                elTextoEncriptado += document.getElementById("txtValorEncriptado").value += elTexto.charCodeAt(i) + clave + ",";
+            }
+
+            if (elTexto.charAt(elTextoEncriptado.charAt(elTextoEncriptado.length -1)))
+            {
+                document.getElementById("txtValorEncriptado").value = document.getElementById("txtValorEncriptado").value.substring(0, document.getElementById("txtValorEncriptado").value.length - 1)
+            }
+        }
+
+        function obtenerClave()
+        {
+            var DIR_SERV = "http://10.1.2.10:8080/appwebprofe/ObtenerClave";
+            xmlHttp.open('GET', DIR_SERV, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+            xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+            xmlHttp.onreadystatechange = procesasRespuestaobtenerClave;
+            xmlHttp.send(null);
+        }
+
+        function enviar() 
+        {
+            var DIR_SERV = "http://10.1.2.10:8080/appwebprofe/EnviarMensaje";
+            xmlHttp.open('POST', DIR_SERV, true);
+
+            var mensaje = {
+                mensaje_original: document.getElementById("txtValor").value,
+                mensaje_cifrado: document.getElementById("txtValorEncriptado").value,
+                clave: clave
+            }
+
+            xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+            xmlHttp.onreadystatechange = procesasRespuesta;
+            xmlHttp.send(JSON.stringify(mensaje));
+        }
+
+        function procesasRespuestaobtenerClave() {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+                clave = parseInt(xmlHttp.responseText);
+            }
+        }
+
+        function procesasRespuesta()
+        {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+                var mensajeRespuesta = xmlHttp.responseText;
+                console.log(mensajeRespuesta);
+            }
+        }
+
+        
+
+        
+    </script>
+</head>
+<body>
+    <textarea name="txtValor" id="txtValor" cols="30" rows="10"></textarea>
+    <br/><br/>
+    <button id="btnEncriptar" onclick="encriptar()">Encriptar</button>
+    <br/><br/>
+    <textarea name="txtValorEncriptado" id="txtValorEncriptado" cols="30" rows="10" readonly></textarea>
+    <br/><br/>
+    <button id="btnEnviar" onclick="enviar()">Enviar Datos a Servidor</button>
+    <br/><br/>
+    <button id="btnRecoger" onclick="obtenerClave()">Recoger de Servidor Clave</button>
+</body>
+</html>
