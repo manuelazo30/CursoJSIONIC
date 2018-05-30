@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Artistas Itunes</title>
@@ -9,107 +10,207 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.21.1/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.21.1/sweetalert2.css" />
 </head>
+
 <body>
     <script>
         var xmlHttp = new XMLHttpRequest();
+        var carrito;
+        var comision = 2;
 
-    function dameConsulta()
-    {
-        var URL = "https://itunes.apple.com/search?term=" + document.getElementById("txtArtista").value; // lola&media=music&limit=20";
-        console.log(URL);
-        xmlHttp.onreadystatechange = procesarPeticion;
-        xmlHttp.open('GET', URL, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
-        xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
-        xmlHttp.send(null); // El cuerpo del mensaje. Aquí podría poner directamente JSON.stringify(persona);
-    }
+        function dameConsulta() {
+            var URL = "https://itunes.apple.com/search?term=" + document.getElementById("txtArtista").value; // lola&media=music&limit=20";
+            console.log(URL);
+            xmlHttp.onreadystatechange = procesarPeticion;
+            xmlHttp.open('GET', URL, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+            xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+            xmlHttp.send(null); // El cuerpo del mensaje. Aquí podría poner directamente JSON.stringify(persona);
+        }
 
-    function procesarPeticion()
-    {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-        {
-            document.getElementById("tbResultados").classList.remove("oculto");
-            var mensajeRespuesta = JSON.parse(xmlHttp.responseText);
-            for (var clave in mensajeRespuesta.results){
-                addInfo(mensajeRespuesta.results[clave]);
+        function mostrarCargando() {
+            document.getElementById("cargando").classList.remove("oculto");
+        }
+
+        function ocultarCargando() {
+            document.getElementById("cargando").classList.add("oculto");
+        }
+
+        function procesarPeticion() {
+            mostrarCargando();
+            carrito = {
+                comision: 0,
+                canciones: new Array() 
+            }
+                new Array();
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) 
+                    {
+                        todosLosTR = document.querySelectorAll("tr");
+                        for (i=1; i<todosLosTR.length;i++)
+                        {
+                            todosLosTR[i].remove();    
+                        }
+                        document.getElementById("tbResultados").classList.remove("oculto");
+                        var mensajeRespuesta = JSON.parse(xmlHttp.responseText);
+                        for (var clave in mensajeRespuesta.results) {
+                            addInfo(mensajeRespuesta.results[clave]);
+                        }
+                    }
+                ocultarCargando();
             }
         }
-    }
 
-    function addInfo(Item)
-    {
-        console.log(Item);
+        function addInfo(Item) {
 
-        // Creo TR, TD y pongo el texto del TD
-        var nuevoTR = document.createElement("TR");
+            //document.getElementById("tbResultados").innerHTML = "";
 
-        var nuevoTD1 = document.createElement("TD");
-        var nuevoTD2 = document.createElement("TD");
-        var nuevoTD3 = document.createElement("TD");
-        var nuevoTD4 = document.createElement("TD");
-        var nuevoTD5 = document.createElement("TD");
+            // Creo TR, TD y pongo el texto del TD
+            var nuevoTR = document.createElement("TR");
 
-        var texto1 = document.createTextNode(Item.trackId);
-        nuevoTD1.appendChild(texto1);
+            var nuevoTD1 = document.createElement("TD");
+            var nuevoTD2 = document.createElement("TD");
+            var nuevoTD3 = document.createElement("TD");
+            var nuevoTD4 = document.createElement("TD");
+            var nuevoTD5 = document.createElement("TD");
 
-        var texto2 = document.createTextNode(Item.artistName);
-        nuevoTD2.appendChild(texto2);
+            var texto1 = document.createTextNode(Item.trackName);
+            nuevoTD1.appendChild(texto1);   
 
-        var imagen = document.createElement("IMG");
-        imagen.src = Item.artworkUrl100;
-        var texto3 = document.createTextNode(imagen);
-        nuevoTD3.appendChild(imagen);
 
-        var texto4 = document.createTextNode(Item.trackPrice + " " + Item.currency);
-        nuevoTD4.appendChild(texto4);
+            var texto2 = document.createTextNode(Item.artistName);
+            nuevoTD2.appendChild(texto2);
 
-        var audio = document.createElement("AUDIO");
-        audio.controls = "controls";
-        var audio2 = document.createElement("SOURCE");
-        audio2.src = Item.previewUrl;
-        audio2.type = "audio/x-m4a";
-        audio.appendChild(audio2);
-        nuevoTD5.appendChild(audio);
- 
-        nuevoTR.appendChild(nuevoTD1);
-        nuevoTR.appendChild(nuevoTD2);
-        nuevoTR.appendChild(nuevoTD3);
-        nuevoTR.appendChild(nuevoTD4);
-        nuevoTR.appendChild(nuevoTD5);
+            var imagen = document.createElement("IMG");
+            imagen.src = Item.artworkUrl100;
+            var texto3 = document.createTextNode(imagen);
+            nuevoTD3.appendChild(imagen);
 
-        document.getElementById("tbResultados").getElementsByTagName('tbody')[0].appendChild(nuevoTR);                
-        
-    }
+            var texto4 = document.createTextNode(Item.trackPrice + " " + Item.currency);
+            nuevoTD4.appendChild(texto4);
+
+            var audio = document.createElement("AUDIO");
+            audio.controls = "controls";
+            var audio2 = document.createElement("SOURCE");
+            audio2.src = Item.previewUrl;
+            audio2.type = "audio/x-m4a";
+            audio.appendChild(audio2);
+            var carrito = document.createElement("IMG");
+            carrito.src = "data:image/jpeg;base64,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"
+            carrito.classList.add("imagenCarrito");
+            //carrito.onclick = addCarrito(Item);
+            carrito.addEventListener("click", function () { addCarrito(Item) });
+            //carrito.onclick = addCarrito(Item); // function () { alert ("Vas a comprar el track " + Item.trackId + " que tiene un precio de " + Item.trackPrice + " " + Item.currency) }
+            nuevoTD5.appendChild(audio);
+            nuevoTD5.appendChild(carrito);
+            nuevoTR.appendChild(nuevoTD1);
+            nuevoTR.appendChild(nuevoTD2);
+            nuevoTR.appendChild(nuevoTD3);
+            nuevoTR.appendChild(nuevoTD4);
+            nuevoTR.appendChild(nuevoTD5);
+
+            document.getElementById("tbResultados").getElementsByTagName('tbody')[0].appendChild(nuevoTR);
+
+        }
+
+        function addCarrito (elQue)
+        {
+            swal({
+                title: 'Añadir al Carrito de la Compra la canción <br/><br/><h2><strong>' + elQue.trackName + '</h2></strong>',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'No',   
+                confirmButtonText: 'Sí',    
+                }).then((result) => {
+                if (result.value) {
+                    carrito.canciones.push(elQue.trackId);
+                    carrito.comision += elQue.trackPrice + comision;
+                    document.getElementById("btnComprar").classList.remove("oculto");
+                    console.log(carrito);
+                    swal(
+                        'Añadido correctamente!',
+                        'Tu canción ha sido añadida al carrito.',
+                        'success'
+                    )
+                }
+            })
+            
+        }
+
+        function sendCarrito()
+        {
+            swal({
+                title: "¿Deseas comprar las canciones seleccionadas?",
+                text: "Serás redirigido a la pasarela de pago si confirmas la compra",
+                type: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                cancelButtonText: 'No',   
+                confirmButtonText: 'Sí'  
+            }, function (isConfirm) {
+                console.log(isConfirm);
+                if (!isConfirm) return;
+                $.ajax({
+                    url: "http://10.1.2.10:8080/appwebprofe/Comprar",
+                    type: "POST",
+                    data: {
+                        carrito: carrito
+                    },
+                    dataType: "json",
+                    success: function () {
+                        swal("Muy bien!", "El carrito ha sido enviado correctamente!", "success");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        swal("Error deleting!", "Please try again", "error");
+                    }
+                });
+            });
+        }
     </script>
 
     <style>
+        .success td {
+            background-color: red !important;
+        }
 
-        .success td
-        {
-            background-color:red !important;
-        }
-    
-        .oculto{
+        .oculto {
             visibility: hidden;
+            display: none;
         }
-    
+
+        .imagenCarrito {
+            vertical-align: top;
+            width: 30px;
+        }
     </style>
     <div id="busqueda">
-        Artista: <input type="text" name="txtArtista" id="txtArtista" value="Bunbury">
+        Artista:
+        <input type="text" name="txtArtista" id="txtArtista" value="Bunbury">
         <br/>
-        <button id="btnBuscar" onclick="dameConsulta()">Buscar</button>
+        <br/>
+        <button id="btnBuscar" onclick="dameConsulta()">Buscar</button> &nbsp; &nbsp; &nbsp; &nbsp; <button id="btnComprar" onclick="sendCarrito()" class="oculto">Comprar</button>
+        <br/><br/>
+
     </div>
     <div id="resultados">
-        <table id ="tbResultados" class="table table-striped">
-            <tr>
-                <td>TrackId</td>
-                <td>Artista</td>
-                <td>Imagen</td>
-                <td>Precio</td>
-                <td>Escuchar</td>
-            </tr>
+        <table id="tbResultados" class="table table-striped oculto">
+                <tr>
+                        <td>Canción</td>
+                        <td>Artista</td>
+                        <td>Imagen</td>
+                        <td>Precio</td>
+                        <td>Escuchar</td>
+                </tr>
         </table>
     </div>
 
+    <div id="cargando" class="oculto">
+        <img src="http://gifimage.net/wp-content/uploads/2017/09/ajax-loader-gif-6.gif" alt="cargando">
+    </div>
+
 </body>
+
 </html>
