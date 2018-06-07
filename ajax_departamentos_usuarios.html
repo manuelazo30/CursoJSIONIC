@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cargar Combos desde otro Combos</title>
+
+    <style>
+        .oculto {
+            display: none;
+        }  
+    </style>
+
+</head>
+<body>
+    <select id = "ddlDepartamentos"></select>
+    <br/><br/>
+    <span id = "lblEmpleados" class="oculto"></span>
+    <select id = "ddlEmpleados" class="oculto"></select>
+</body>
+
+<script>
+
+        var xmlHttp = new XMLHttpRequest();
+
+        window.onload = inicializar;
+        document.getElementById("ddlDepartamentos").addEventListener("change", muestraEmpleados);
+
+        function addChildToSelect(ddl, clave, nombreAMostrar)
+        {
+            var x = document.getElementById(ddl);
+            var option = document.createElement("option");
+            option.text = nombreAMostrar;
+            option.value = clave;
+            x.add(option);
+        }
+        function inicializar()
+        {
+            addChildToSelect("ddlDepartamentos", "-1", "Por favor, seleccione un departamento")
+            rellenaDepartamentos();
+        }
+
+        function rellenaDepartamentos()
+        {
+            xmlHttp.onreadystatechange = function(){ 
+                if (xmlHttp.readyState == 4) {
+                    if(xmlHttp.status == 200)
+                    {
+                        var respuesta = JSON.parse(xmlHttp.responseText);
+
+                        for (var i = 0; i < respuesta.length; i++)
+                        {
+                            addChildToSelect("ddlDepartamentos", respuesta[i].numero, respuesta[i].nombre);
+                        }
+                    }
+                    else 
+                    {
+                        addChildToSelect("ddlDepartamentos", "-1", "No hay Departamentos");
+                    }
+                }
+            };
+
+            xmlHttp.open('GET', "http://10.1.2.10:8080/appwebprofe/CargaMenuSelect", true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+            enviarPeticion();
+        }
+
+        function rellenaEmpleados(elDepartamentoInt)
+        {
+            xmlHttp.onreadystatechange = function(){ 
+                if (xmlHttp.readyState == 4) {
+                    if(xmlHttp.status == 200)
+                    {
+                        var respuesta = JSON.parse(xmlHttp.responseText);
+                        if (respuesta.length > 0)
+                        {
+                            for (var i = 0; i < respuesta.length; i++)
+                            {
+                                addChildToSelect("ddlEmpleados", respuesta[i].nombre, respuesta[i].nombre);
+                            }
+                        }
+                        else
+                        {
+                            addChildToSelect("ddlEmpleados", "-1", "No hay Empleados en el departamento ");
+                        }
+                        
+                    }
+                }
+            };
+
+            var URLConsumir = "http://10.1.2.10:8080/appwebprofe/CargarTrabajadores?dpto=" + elDepartamentoInt;
+            xmlHttp.open('GET', URLConsumir, true); // indicamos cómo vamos a enviar la información. POST / GET, RECURSO, ASINCRONO O NO ASÍNCRONO
+            enviarPeticion();
+        }
+
+        function muestraEmpleados()
+        {
+            var e = document.getElementById("ddlDepartamentos");
+            var elDepartamentoInt = e.options[e.selectedIndex].value;
+            var elDepartamentoNombre = e.options[e.selectedIndex].innerHTML;
+            var ddlEmpleados = document.getElementById("ddlEmpleados");
+            var textoListaEmpleados = document.getElementById("lblEmpleados");
+            ddlEmpleados.innerHTML = "";
+
+            if (elDepartamentoInt != "-1")
+            {
+                textoListaEmpleados.classList.remove("oculto");
+                textoListaEmpleados.innerHTML = "Empleados del Departamento " + elDepartamentoNombre;
+                ddlEmpleados.classList.remove("oculto");
+                rellenaEmpleados(elDepartamentoInt);
+            }
+            else
+            {
+                textoListaEmpleados.classList.add("oculto");
+                textoListaEmpleados.innerHTML = "Empleados del Departamento ";
+                ddlEmpleados.classList.add("oculto");
+            }
+        }
+
+        function enviarPeticion()
+        {
+            xmlHttp.setRequestHeader('Content-Type', 'application/json'); // El tipo de información que viaja en el cuerpo
+            xmlHttp.send(null); // El cuerpo del mensaje. Aquí podría poner directamente JSON.stringify(persona);
+        }
+    </script>
+</html>

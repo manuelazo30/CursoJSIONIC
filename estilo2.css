@@ -10,3 +10,17 @@ td img {
     width: 100%; 
     object-fit: contain;
 }
+
+#ranking th{
+    border: 10px;
+    background-color: crimson;
+    color: white;
+}
+
+#ranking > tbody > tr > td{
+    width: auto;
+    height: auto;
+    cursor: none;
+    padding: 5px;
+    border: 2px;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://unpkg.com/sweetalert2"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="intlTelInput.js"></script>
+    <script src="utils.js"></script>
+    <link rel="stylesheet" href="intlTelInput.css">
+</head>
+<body>
+    <form id = "frm1" method="post">
+        Nombre: <input type="text" id="txtNombre" name="nombre">
+        <br/>
+        Email: <input type="text" id="txtEmail" name="mail">
+        <br/>
+        Password: <input type="text" id="txtPassword" name="pwd">
+        <br/>
+        Confirma Password: <input type="text" id="txtPassword2" name="txtPassword2">
+        <br/>
+        Teléfono: 
+        <input type="tel" id="phone" name ="phone">
+        <br/>
+        Web: <input type="text" id="txtWeb" name="web">
+        <br/><br/>
+        <input type="submit" id="btenviar" value="Enviar">
+        <input type="reset" id="btreset" value="Limpiar">
+    </form>
+    <script>
+    
+    document.getElementById("frm1").addEventListener("submit", validaForm);
+    var xmlhttp = new XMLHttpRequest();
+
+    function validaForm(e)
+    {
+        e.preventDefault();
+        var error = "";
+        const EXPRESION_REGULAR_EMAIL = /^\w+([\.\+\-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+        const EXPRESION_REGULAR_WEB = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+
+        if (document.getElementById("txtNombre").value.length < 6)
+        {
+            error += "- El nombre ha de contener mínimo 6 caracteres <br/>";
+        }
+        
+        var emailValido = new RegExp(EXPRESION_REGULAR_EMAIL);
+        if (!emailValido.test(document.getElementById("txtEmail").value))
+        {
+            error += "- El mail no es correcto <br/>";
+        }
+
+        if ((document.getElementById("txtPassword").value != document.getElementById("txtPassword2").value) || (document.getElementById("txtPassword").value.length < 6 ))
+        {
+            error += "- Las contraseñas no son válidas o no coinciden <br/>";
+        }
+
+        varWebValida = new RegExp(EXPRESION_REGULAR_WEB);
+
+        if (!varWebValida.test(document.getElementById("txtWeb").value))
+        {
+            error += "- La web no es válida <br/>";
+        }
+
+        if (error == "")
+        {
+            var URL ="http://10.1.2.10:8080/appwebprofe/Login";
+            
+            var datos = {
+                nombre: document.getElementById("txtNombre").value,
+                mail: document.getElementById("txtEmail").value,
+                pwd: document.getElementById("txtPassword").value,
+                telefono: "+" + document.getElementsByClassName("country active")[0].dataset.dialCode + document.getElementById("phone").value,
+                web: document.getElementById("txtWeb").value
+            }
+            xmlhttp.onreadystatechange = procesarRespuesta;
+            xmlhttp.open("POST", URL);
+            xmlhttp.send(JSON.stringify(datos));
+        }
+        else
+        {
+            swal(error);
+        }
+    }
+    
+    function procesarRespuesta()
+    {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+        {
+            document.location = "https://www.manuelazo.com";
+        }
+    }
+
+    $("#phone").intlTelInput();
+
+    </script>
+   
+</body>
+</html>
